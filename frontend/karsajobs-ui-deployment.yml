@@ -27,7 +27,7 @@ spec:
 
           env:
             - name: VUE_APP_BACKEND
-              value: "http://127.0.0.1:63658"
+              value: "http://127.0.0.1:59953"
               # Environment variable used in Vue frontend to point to backend API
 
           resources:
