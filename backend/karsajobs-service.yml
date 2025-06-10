@@ -1,0 +1,18 @@
+apiVersion: v1 # API version for core Kubernetes resources
+kind: Service # Defines a Service resource
+
+metadata:
+  name: karsajobs # Name of the Service
+
+spec:
+  type: ClusterIP # Default service type
+
+  selector:
+    app: karsajobs # Connects the service to pods
+
+  ports:
+    - protocol: TCP # Protocol used
+      port: 8080 # Port exposed by the service inside the cluster
+      targetPort: 8080 # Port the container listens on
+      # For exposing this service externally via NodePort
+      nodePort: 30008      # Custom static port on each Node

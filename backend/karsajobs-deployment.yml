@@ -1,0 +1,67 @@
+apiVersion: apps/v1 # API version used for Deployment resources
+kind: Deployment # Specifies this manifest is for a Deployment
+
+metadata:
+  name: karsajobs # Name of the Deployment
+
+spec:
+  replicas: 1 # Number of pod replicas to run
+
+  selector:
+    matchLabels:
+      app: karsajobs # Pod selector
+
+  template:
+    metadata:
+      labels:
+        app: karsajobs # Label for the pod
+
+    spec:
+      containers:
+        - name: karsajobs # Name of the container
+          image: ghcr.io/saputrauta/karsajobs:latest
+          # Docker image pulled from GitHub Container Registry
+
+          ports:
+            - containerPort: 8080 # Port exposed by the app 
+
+          env:
+            # Environment variables injected into the container
+            - name: APP_PORT
+              value: "8080" # Port your app listens to
+            - name: MONGO_HOST
+              value: "mongo" # MongoDB service name used to connect internally
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret # Reference to Kubernetes secret
+                  key: MONGO_ROOT_USERNAME # Key inside the secret for username
+            - name: MONGO_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_ROOT_PASSWORD # Key inside the secret for password
+            - name: NODE_ENV
+              value: "production" # Set Node.js environment to production
+
+          resources: # Resource requests and limits for this container
+            requests:
+              cpu: "200m" # Minimum CPU requested (0.2 core)
+              memory: "256Mi" # Minimum memory requested
+            limits:
+              cpu: "500m" # Max CPU allowed (0.5 core)
+              memory: "512Mi" # Max memory allowed
+
+          livenessProbe: # Health check to see if the container is still alive
+            httpGet:
+              path: /health # GET request to /health
+              port: 8080 # On port 8080
+            initialDelaySeconds: 30 # Wait 30s before first check
+            periodSeconds: 10 # Check every 10 seconds
+
+          readinessProbe: # Health check to see if container is ready to accept traffic
+            httpGet:
+              path: /health # GET request to /health
+              port: 8080
+            initialDelaySeconds: 5 # Wait 5s before first check
+            periodSeconds: 5 # Check every 5 seconds
