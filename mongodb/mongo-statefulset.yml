@@ -20,29 +20,28 @@ spec:
             - containerPort: 27017 #Expose default MongoDB port
 
           volumeMounts:
-          - name: mongo-storage # Name of the volume mount
-            mountPath: /data/db # Mount path inside the container
+            - name: mongo-storage # Name of the volume mount
+              mountPath: /data/db # Mount path inside the container
 
           env:
-          - name: MONGO_INITDB_ROOT_USERNAME # Environment variable
-            valueFrom:
-             secretKeyRef:
-               name: mongo-secret # Reference to the secret
-               key: MONGO_ROOT_USERNAME # Use the value this key as the username
-               
-          - name: MONGO_INITDB_ROOT_PASSWORD
-            valueFrom:
-             secretKeyRef:
-               name: mongo-secret # Reference to the secret
-               key: MONGO_ROOT_PASSWORD # Use the value this key as the password
+            - name: MONGO_INITDB_ROOT_USERNAME # Environment variable
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret # Reference to the secret
+                  key: MONGO_ROOT_USERNAME # Use the value this key as the username
+
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret # Reference to the secret
+                  key: MONGO_ROOT_PASSWORD # Use the value this key as the password
 
   volumeClaimTemplates: # Define the PersistentVolumeClaim
     - metadata:
         name: mongo-storage # Name of the PVC
       spec:
-        accessModes: [ "ReadWriteOnce" ] # Single node read-write
+        accessModes: ["ReadWriteOnce"] # Single node read-write
         resources:
           requests:
             storage: 1Gi # Storage size
 
-            

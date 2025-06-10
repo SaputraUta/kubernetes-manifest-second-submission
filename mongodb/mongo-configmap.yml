@@ -1,0 +1,18 @@
+apiVersion: v1 # Specifies the API version for the ConfigMap resource
+kind: ConfigMap # Declares that this resource is a ConfigMap
+
+metadata:
+  name: mongo-config # Name of the ConfigMap; can be referenced by pods or volumes
+
+data:
+  # MongoDB configuration file content (key: mongo.conf)
+  mongo.conf: |
+    storage:
+      dbPath: /data/db      # Directory where MongoDB stores its data
+
+    replication:
+      replSetName: rs0      # Name of the MongoDB replica set (required for replication setup)
+
+    net:
+      bindIp: 0.0.0.0       # MongoDB will listen on all network interfaces (useful for container environments)
+      port: 27017           # The default port on which MongoDB listens

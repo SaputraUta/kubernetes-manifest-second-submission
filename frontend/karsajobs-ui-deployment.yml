@@ -1,0 +1,46 @@
+apiVersion: apps/v1 # API version for Deployment resource
+kind: Deployment # Declares this is a Deployment kind
+
+metadata:
+  name: karsajobs-ui # Name of the Deployment object
+
+spec:
+  replicas: 1 # Number of pod replicas to run
+
+  selector:
+    matchLabels:
+      app: karsajobs-ui # Selector to match pods with this labe 
+
+  template:
+    metadata:
+      labels:
+        app: karsajobs-ui # Label applied to pods created by this Deployment
+
+    spec:
+      containers:
+        - name: karsajobs-ui # Name of the container
+          image: ghcr.io/saputrauta/karsajobs-ui:latest
+          # Image pulled from GitHub Container Registry
+
+          ports:
+            - containerPort: 80 # Exposes port 80 inside the container
+
+          env:
+            - name: VUE_APP_BACKEND
+              value: "http://192.168.49.2:30008"
+              # Environment variable used in Vue frontend to point to backend API
+
+          resources:
+            requests:
+              cpu: "100m" # Reserve 0.1 CPU and 128Mi memory for the container
+              memory: "128Mi"
+            limits:
+              cpu: "500m" # Max allowed: 0.5 CPU and 256Mi memory
+              memory: "256Mi"
+
+          livenessProbe:
+            httpGet:
+              path: / # Performs an HTTP GET request to root path
+              port: 80 # On port 80
+            initialDelaySeconds: 30 # Wait 30s before starting checks
+            periodSeconds: 10 # Then check every 10s
