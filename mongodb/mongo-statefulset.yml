@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet # Declares that this is a StatefulSet
+metadata:
+  name: mongo # Name of the StatefulSet
+spec:
+  serviceName: mongo # Name of the headless service
+  replicas: 1 # Desired pod replicas
+  selector:
+    matchLabels:
+      app: mongo # Label selector to identify which pods this StatefulSet manages
+  template: # Pod template for the StatefulSet
+    metadata:
+      labels:
+        app: mongo # Label for the pod
+    spec:
+      containers:
+        - name: mongo # Name of the container
+          image: mongo # MongoDB image to use
+          ports:
+            - containerPort: 27017 #Expose default MongoDB port
+
+          volumeMounts:
+          - name: mongo-storage # Name of the volume mount
+            mountPath: /data/db # Mount path inside the container
+
+          env:
+          - name: MONGO_INITDB_ROOT_USERNAME # Environment variable
+            valueFrom:
+             secretKeyRef:
+               name: mongo-secret # Reference to the secret
+               key: MONGO_ROOT_USERNAME # Use the value this key as the username
+               
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            valueFrom:
+             secretKeyRef:
+               name: mongo-secret # Reference to the secret
+               key: MONGO_ROOT_PASSWORD # Use the value this key as the password
+
+  volumeClaimTemplates: # Define the PersistentVolumeClaim
+    - metadata:
+        name: mongo-storage # Name of the PVC
+      spec:
+        accessModes: [ "ReadWriteOnce" ] # Single node read-write
+        resources:
+          requests:
+            storage: 1Gi # Storage size
+
+            
