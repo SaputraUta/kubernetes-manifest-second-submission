@@ -23,7 +23,7 @@ spec:
           # Image pulled from GitHub Container Registry
 
           ports:
-            - containerPort: 80 # Exposes port 80 inside the container
+            - containerPort: 8000 # Exposes port 80 inside the container
 
           env:
             - name: VUE_APP_BACKEND
@@ -33,14 +33,14 @@ spec:
           resources:
             requests:
               cpu: "100m" # Reserve 0.1 CPU and 128Mi memory for the container
-              memory: "128Mi"
+              memory: "256Mi"
             limits:
               cpu: "500m" # Max allowed: 0.5 CPU and 256Mi memory
-              memory: "256Mi"
+              memory: "512Mi"
 
           livenessProbe:
             httpGet:
               path: / # Performs an HTTP GET request to root path
-              port: 80 # On port 80
+              port: 8000 # On port 80
             initialDelaySeconds: 30 # Wait 30s before starting checks
             periodSeconds: 10 # Then check every 10s
