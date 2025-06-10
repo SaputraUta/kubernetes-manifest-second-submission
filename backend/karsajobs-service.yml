@@ -5,7 +5,7 @@ metadata:
   name: karsajobs # Name of the Service
 
 spec:
-  type: ClusterIP # Default service type
+  type: NodePort # Default service type
 
   selector:
     app: karsajobs # Connects the service to pods
