@@ -2,21 +2,20 @@ apiVersion: v1 # Specifies the API version for the Service resource
 kind: Service # Declares that this resource is a Service
 
 metadata:
-  name: mongo # Name of the service; will be used for DNS (e.g., mongo.default.svc.cluster.local)
+  name: mongo # Name of the service
   labels:
-    app: mongo # Labels to identify the service; useful for organization and selection
+    app: mongo # Labels to identify the service
 
 spec:
-  type: ClusterIP # Specifies the type of service; ClusterIP is the default, exposing the service only inside the cluster
+  type: ClusterIP # Specifies the type of service
 
   selector:
-    app: mongo # Targets pods with the label "app: mongo"; connects the service to the MongoDB pods in the StatefulSet
+    app: mongo # Targets pods
 
   ports:
     - name: mongodb # A name for the port (optional, but useful for referencing)
-      protocol: TCP # Communication protocol; MongoDB uses TCP
+      protocol: TCP # Communication protocol
       port: 27017 # Port exposed by the service inside the cluster
       targetPort: 27017 # Port on the container that receives traffic from the service
 
-  clusterIP: None # Setting ClusterIP to None creates a **headless service**, enabling direct DNS resolution to pod IPs.
-    # Required for StatefulSets to maintain stable network identity per pod (e.g., mongo-0.mongo)
+  clusterIP: None # Setting ClusterIP to None
