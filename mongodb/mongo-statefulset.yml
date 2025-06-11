@@ -22,21 +22,20 @@ spec:
           volumeMounts:
             - name: mongo-storage # Name of the volume mount
               mountPath: /data/db # Mount path inside the container
+            - name: mongo-secret          # ← THIS WAS MISSING!
+              mountPath: /etc/mongo-credentials
+              readOnly: true
 
           env:
-            - name: MONGO_INITDB_ROOT_USERNAME # Environment variable
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-secret # Reference to the secret
-                  key: MONGO_ROOT_USERNAME # Use the value this key as the username
-
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-secret # Reference to the secret
-                  key: MONGO_ROOT_PASSWORD # Use the value this key as the password
+            - name: MONGO_INITDB_ROOT_USERNAME_FILE # Environment variables pointing to file
+              value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD_FILE # Environment variables pointing to file
+              value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
                   
       volumes:
         - name: mongo-storage # Use existing PVC instead of volumeClaimTemplates
           persistentVolumeClaim:
             claimName: mongo-pvc # Reference to PVC defined in mongo-pv-pvc.yml
+        - name: mongo-secret              # ← THIS WAS MISSING!
+          secret:
+            secretName: mongo-secret

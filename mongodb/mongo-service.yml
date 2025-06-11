@@ -18,6 +18,5 @@ spec:
       port: 27017 # Port exposed by the service inside the cluster
       targetPort: 27017 # Port on the container that receives traffic from the service
 
-  clusterIP:
-    None # Setting ClusterIP to None creates a **headless service**, enabling direct DNS resolution to pod IPs.
+  clusterIP: None # Setting ClusterIP to None creates a **headless service**, enabling direct DNS resolution to pod IPs.
     # Required for StatefulSets to maintain stable network identity per pod (e.g., mongo-0.mongo)
