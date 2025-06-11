@@ -25,12 +25,20 @@ spec:
             - name: mongo-secret
               mountPath: /etc/mongo-credentials
               readOnly: true
+            - name: mongo-config    # ConfigMap volume mount
+              mountPath: /config    # Mount path as required
+              readOnly: true
 
           env:
             - name: MONGO_INITDB_ROOT_USERNAME_FILE # Environment variables pointing to file
               value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
             - name: MONGO_INITDB_ROOT_PASSWORD_FILE # Environment variables pointing to file
               value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+
+          command:              #Use the config file
+            - mongod
+            - --config
+            - /config/mongo.conf
                   
       volumes:
         - name: mongo-storage # Use PVC
@@ -39,3 +47,7 @@ spec:
         - name: mongo-secret
           secret:
             secretName: mongo-secret
+        - name: mongo-config    # ConfigMap volume
+          configMap:
+            name: mongo-config
+            

@@ -10,9 +10,9 @@ data:
     storage:
       dbPath: /data/db      # Directory where MongoDB stores its data
 
-    replication:
-      replSetName: rs0      # Name of the MongoDB replica set
-
     net:
       bindIp: 0.0.0.0       # MongoDB will listen on all network interface
       port: 27017           # The default port on which MongoDB listens
+      
+    security:
+      authorization: enabled
